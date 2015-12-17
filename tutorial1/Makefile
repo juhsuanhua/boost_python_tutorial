@@ -4,8 +4,8 @@ PYTHON_INCLUDE = /usr/include/python$(PYTHON_VERSION)
 BOOST_INC = /usr/include
 BOOST_LIB = /usr/lib
 
-CC = g++ -std=c++11
-CFLAGS = -I$(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC
+CXX = g++
+CXXFLAGS = -std=c++11 -I$(PYTHON_INCLUDE) -I$(BOOST_INC) -fPIC
 LDFLAGS = -L$(BOOST_LIB) -lboost_python -L/usr/lib/python$(PYTHON_VERSION)/config -lpython$(PYTHON_VERSION)
 
 # compile mesh classes
@@ -14,10 +14,10 @@ OBJS = world.o small_world.o hello_ext.o
 DEPS = world.h small_world.h hello_ext.h
 
 $(TARGET).so: $(OBJS)
-	$(CC) -shared -Wl,--export-dynamic $^ $(LDFLAGS) -o $(TARGET).so
+	$(CXX) -shared -Wl,--export-dynamic $^ $(LDFLAGS) -o $(TARGET).so
 
 %.o: %.cpp $(DEPS)
-	$(CC) -o $@ -c $< $(CFLAGS)
+	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 clean:
 	rm *.o *.so
