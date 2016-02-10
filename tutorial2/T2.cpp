@@ -5,16 +5,15 @@
 
 #include <boost/python.hpp>
 
-using namespace boost::python;
 
-object compareUpper(str name)
+boost::python::object compareUpper(boost::python::str name)
 {
-  str in_upper = name.upper();
-  tuple ret = make_tuple(in_upper, name);
+  boost::python::str in_upper = name.upper();
+  boost::python::tuple ret = make_tuple(in_upper, name);
   return ret;
 }
 
-void editDict(dict d)
+void editDict(boost::python::dict d)
 {
   d["field"] = 3;
 }
@@ -29,9 +28,9 @@ public:
   {
     return a_ + b_;
   }
-  dict getVars()
+  boost::python::dict getVars()
   {
-    dict vars;
+    boost::python::dict vars;
     vars["a"] = a_;
     vars["b"] = b_;
     return vars;
@@ -40,10 +39,10 @@ private:
   int a_, b_;
 };
 
-object getCObject()
+boost::python::object getCObject()
 {
-  object ret = (
-    class_<C>("C", init<int, int>())
+  boost::python::object ret = (
+    boost::python::class_<C>("C", boost::python::init<int, int>())
         .def("sum", &C::sum)
         .def("get_vars", &C::getVars)
     )(3, 4);
@@ -53,10 +52,10 @@ object getCObject()
 
 // Extracting objects
 
-double extractLength(object vec)
+double extractLength(boost::python::object vec)
 {
   // double length = extract<double>(vec.attr("length"));
-  double length = extract<double>(vec.attr("length"));
+  double length = boost::python::extract<double>(vec.attr("length"));
   return length;
 }
 
@@ -68,9 +67,9 @@ enum choice { red, blue };
 // See how Boost Python deals with vectors
 
 template<typename T>
-list convertToList(const std::vector<T> &vec)
+boost::python::list convertToList(const std::vector<T> &vec)
 {
-  list ret;
+  boost::python::list ret;
   for (auto iter = vec.begin(); iter != vec.end(); iter++)
   {
     ret.append(*iter);
@@ -78,27 +77,27 @@ list convertToList(const std::vector<T> &vec)
   return ret;
 }
 
-list getVector()
+boost::python::list getVector()
 {
-  std::vector<tuple> vec;
+  std::vector<boost::python::tuple> vec;
   for (unsigned int i = 0; i < 10; i++)
   {
-    vec.push_back(make_tuple(i, 2 * i));
+    vec.push_back(boost::python::make_tuple(i, 2 * i));
   }
-  list L = convertToList(vec);
+  boost::python::list L = convertToList(vec);
   return L;
 }
 
 
 BOOST_PYTHON_MODULE(T2)
 {
-  def("compare_upper", compareUpper);
-  def("edit_dict", editDict);
-  def("get_c_object", getCObject);
-  def("extract_length", extractLength);
-  enum_<choice>("choice")
+  boost::python::def("compare_upper", compareUpper);
+  boost::python::def("edit_dict", editDict);
+  boost::python::def("get_c_object", getCObject);
+  boost::python::def("extract_length", extractLength);
+  boost::python::enum_<choice>("choice")
       .value("red", red)
       .value("blue", blue)
   ;
-  def("get_vector", getVector);
+  boost::python::def("get_vector", getVector);
 }
